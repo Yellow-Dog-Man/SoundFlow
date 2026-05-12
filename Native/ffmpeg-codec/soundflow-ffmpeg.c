@@ -321,7 +321,7 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
 
     // Convert the start pts to frame index
     if (startPts == PTS_UNINITIALIZED || startPts < 0)
-        *out_start_frameIndex = -1;
+        *out_start_frameIndex = -2;
     else
     {
         AVStream* stream = decoder->format_ctx->streams[decoder->stream_index];
