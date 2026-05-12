@@ -346,6 +346,20 @@ SF_FFMPEG_API SF_Result sf_decoder_seek_to_pcm_frame(SF_Decoder* decoder, int64_
     avcodec_flush_buffers(decoder->codec_ctx);
     swr_init(decoder->swr_ctx);
 
+    // Try drain the buffer
+    if (decoder->swr_ctx) {
+        uint8_t* drain_buf = av_malloc(4096 * decoder->target_channels
+            * decoder->target_bytes_per_sample);
+        if (drain_buf) {
+            uint8_t* drain_ptr[] = { drain_buf };
+            int drained;
+            do {
+                drained = swr_convert(decoder->swr_ctx, drain_ptr, 4096, NULL, 0);
+            } while (drained > 0);
+            av_free(drain_buf);
+        }
+    }
+
     return SF_RESULT_SUCCESS;
 }
 
