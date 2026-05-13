@@ -354,7 +354,6 @@ SF_FFMPEG_API SF_Result sf_decoder_seek_to_pcm_frame(SF_Decoder* decoder, int64_
     // Flush buffers and seek
     avcodec_flush_buffers(decoder->codec_ctx);
     swr_init(decoder->swr_ctx);
-    swr_convert(decoder->swr_ctx, NULL, 0, NULL, 0);
 
     return SF_RESULT_SUCCESS;
 }
