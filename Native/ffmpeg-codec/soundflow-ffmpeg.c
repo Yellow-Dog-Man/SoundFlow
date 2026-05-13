@@ -251,7 +251,7 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
 
             // Resample the frame to target format
             int out_samples = swr_convert(decoder->swr_ctx,
-                NULL,
+                out_ptr,
                 (int)(frameCount - frames_read),
                 (const uint8_t**)decoder->frame->data,
                 decoder->frame->nb_samples);
@@ -354,6 +354,7 @@ SF_FFMPEG_API SF_Result sf_decoder_seek_to_pcm_frame(SF_Decoder* decoder, int64_
     // Flush buffers and seek
     avcodec_flush_buffers(decoder->codec_ctx);
     swr_init(decoder->swr_ctx);
+    swr_convert(decoder->swr_ctx, NULL, 0, NULL, 0);
 
     return SF_RESULT_SUCCESS;
 }
