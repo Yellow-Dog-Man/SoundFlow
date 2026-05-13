@@ -259,6 +259,9 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
             if (out_samples > 0) {
                 out_ptr[0] += out_samples * decoder->target_channels * decoder->target_bytes_per_sample;
                 frames_read += out_samples;
+
+                if (startPts == PTS_UNINITIALIZED)
+                    startPts = -2;
             }
             av_frame_unref(decoder->frame);
             continue;
@@ -274,6 +277,9 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
                 if (flushed_samples > 0) {
                     out_ptr[0] += flushed_samples * decoder->target_channels * decoder->target_bytes_per_sample;
                     frames_read += flushed_samples;
+
+                    if (startPts == PTS_UNINITIALIZED)
+                        startPts = -3;
                 }
             } while (flushed_samples > 0 && frames_read < frameCount);
 
@@ -324,7 +330,7 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
 
     // Convert the start pts to frame index
     if (startPts == PTS_UNINITIALIZED || startPts < 0)
-        *out_start_frameIndex = -5;
+        *out_start_frameIndex = startPts;
     else
     {
         AVStream* stream = decoder->format_ctx->streams[decoder->stream_index];
