@@ -308,7 +308,8 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
 
             if (decoder->packet->stream_index == decoder->stream_index) {
 
-                AVPacketSideData* sd = av_packet_get_side_data(decoder->packet, AV_PKT_DATA_SKIP_SAMPLES);
+                int side_data_size;
+                AVPacketSideData* sd = av_packet_get_side_data(decoder->packet, AV_PKT_DATA_SKIP_SAMPLES, &side_data_size);
 
                 if (sd && sd->size >= 4) {
                     skipSamples += AV_RL32(sd->data);
