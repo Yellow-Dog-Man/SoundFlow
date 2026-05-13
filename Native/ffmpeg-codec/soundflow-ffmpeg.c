@@ -6,6 +6,7 @@
 #include <libavutil/channel_layout.h>
 #include <libavutil/audio_fifo.h>
 #include <libavutil/mathematics.h>
+#include <libavutil/avr32/intreadwrite.h>
 #include <libswresample/swresample.h>
 #include <stdio.h>
 #include <stdlib.h>
