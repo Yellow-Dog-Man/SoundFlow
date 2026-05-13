@@ -6,7 +6,6 @@
 #include <libavutil/channel_layout.h>
 #include <libavutil/audio_fifo.h>
 #include <libavutil/mathematics.h>
-#include <libavutil/intreadwrite.h>
 #include <libswresample/swresample.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -218,7 +217,6 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
     int draining = 0;
 
     int64_t startPts = PTS_UNINITIALIZED;
-    uint32_t skipSamples = 0;
 
     while (frames_read < frameCount) {
         // Check if the resampler has data buffered from previous calls.
@@ -308,13 +306,6 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
 
             if (decoder->packet->stream_index == decoder->stream_index) {
 
-                size_t side_data_size;
-                uint8_t* sd = av_packet_get_side_data(decoder->packet, AV_PKT_DATA_SKIP_SAMPLES, &side_data_size);
-
-                if (sd && side_data_size >= 4) {
-                    skipSamples += AV_RL32(sd);
-                }
-
                 if (avcodec_send_packet(decoder->codec_ctx, decoder->packet) < 0) {
                     av_packet_unref(decoder->packet);
                     *out_frames_read = frames_read;
@@ -342,8 +333,6 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
         *out_start_frameIndex = startPts;
     else
     {
-        startPts -= skipSamples;
-
         AVStream* stream = decoder->format_ctx->streams[decoder->stream_index];
         *out_start_frameIndex = av_rescale_q(startPts, stream->time_base, (AVRational) { 1, stream->codecpar->sample_rate });
     }
