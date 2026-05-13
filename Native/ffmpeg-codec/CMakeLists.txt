@@ -80,7 +80,7 @@ set(FFMPEG_INSTALL_DIR "${CMAKE_BINARY_DIR}/ffmpeg-install")
 set(LAME_INSTALL_DIR "${CMAKE_BINARY_DIR}/lame-install")
 
 # FFmpeg & LAME download parameters
-set(FFMPEG_VERSION "8.0")
+set(FFMPEG_VERSION "8.1.1")
 set(FFMPEG_URL "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.gz")
 set(LAME_URL "https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz")
 
@@ -107,7 +107,7 @@ set(FFMPEG_COMMON_FLAGS
         --enable-static
         --enable-pic
         --disable-symver
-        
+
 
         # Library Linking (LAME Support)
         --enable-libmp3lame
