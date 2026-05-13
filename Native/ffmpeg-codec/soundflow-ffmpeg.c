@@ -244,7 +244,7 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
 
             // If this is the first chunk of data we actually decoded, store the pts of the start
             if (startPts == PTS_UNINITIALIZED)
-                startPts = decoder->codec_ctx->pts_correction_last_dts;
+                startPts = decoder->codec_ctx->pts_correction_last_pts;
 
             // Resample the frame to target format
             int out_samples = swr_convert(decoder->swr_ctx,
