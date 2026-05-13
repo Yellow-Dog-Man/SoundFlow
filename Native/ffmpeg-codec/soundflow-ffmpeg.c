@@ -321,7 +321,7 @@ SF_FFMPEG_API SF_Result sf_decoder_read_pcm_frames(SF_Decoder* decoder, void* pF
 
     // Convert the start pts to frame index
     if (startPts == PTS_UNINITIALIZED || startPts < 0)
-        *out_start_frameIndex = -3;
+        *out_start_frameIndex = -4;
     else
     {
         AVStream* stream = decoder->format_ctx->streams[decoder->stream_index];
@@ -345,6 +345,7 @@ SF_FFMPEG_API SF_Result sf_decoder_seek_to_pcm_frame(SF_Decoder* decoder, int64_
     // Flush buffers and seek
     avcodec_flush_buffers(decoder->codec_ctx);
     avformat_flush(decoder->format_ctx);
+    avio_flush(decoder->format_ctx->pb);
     swr_init(decoder->swr_ctx);
 
     return SF_RESULT_SUCCESS;
